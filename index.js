@@ -1,12 +1,20 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const fs = require('fs');
+
+var jsonData
+
+fs.readFile('./data/access.json', 'utf8', function(err, data){
+    if(err){
+        console.log('Error: acces.json not found');
+    } else {
+        jsonData = JSON.parse(data);
+    }
+});
 
 const port = 3000;
 const app = express();
-
-var login = 'felipe';
-var password = '12345';
 
 app.use(session({secret:'chavebreq'}));
 app.use(express.json());
@@ -26,10 +34,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/', (req,res) => {
-    if(req.body.login == login && req.body.password == password) {
-        req.session.login = login;
+    if(req.body.login == jsonData.user && req.body.password == jsonData.pass) {
+        req.session.login = jsonData.user;
         console.log(req.session.login + ' logged with success');
-        res.render('logged-page', {login: login});
+        res.render('logged-page', {login: jsonData.user});
     } else {
         res.render('index');
         console.log('Invalid Credentials by ' + req.body.login);
