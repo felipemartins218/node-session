@@ -1,16 +1,16 @@
 const express = require('express');
 const session = require('express-session');
+const security = require('./utils/securityUtils');
 const path = require('path');
 const fs = require('fs');
 
-var jsonData
+var jsonData;
 
 fs.readFile('./data/access.json', 'utf8', function(err, data){
-    if(err){
+    if(err)
         console.log('Error: acces.json not found');
-    } else {
+    else
         jsonData = JSON.parse(data);
-    }
 });
 
 const port = 3000;
@@ -26,11 +26,10 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, '/views'));
 
 app.get('/', (req, res) => {
-    if(req.session.login){
+    if(req.session.login)
         res.render('logged-page');
-    } else {
+    else
         res.render('index');
-    }
 });
 
 app.post('/', (req,res) => {
@@ -44,6 +43,10 @@ app.post('/', (req,res) => {
     }
 });
 
+app.post('/hash', (req,res) => {
+    security.hashText(cachorro);
+});
+
 app.listen(port, () => {
-    console.log('servidor rodando.');
+    console.log('servidor iniciado.');
 })
